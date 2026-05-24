@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Modules - StudentPlanner</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<script>
+if(localStorage.getItem("login") !== "true"){
+    window.location = "index.html";
+}
+</script>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark px-4">
+
+    <!-- BRAND -->
+    <a class="navbar-brand fw-bold" href="#">
+        📘 Student<span style="color:#22c55e;">Planner</span>
+    </a>
+
+    <!-- TOGGLE -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- CONTENT -->
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+        <!-- CENTER -->
+        <div class="nav-links d-flex gap-3 mx-auto">
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="bi bi-house"></i> Home
+            </a>
+
+            <a href="tasks.html" class="nav-item">
+                <i class="bi bi-list-task"></i> Tasks
+            </a>
+
+            <a href="modules.html" class="nav-item active">
+                <i class="bi bi-folder"></i> Modules
+            </a>
+
+            <a href="profile.html" class="nav-item">
+                <i class="bi bi-person"></i> Profile
+            </a>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="d-flex align-items-center gap-3">
+    <span id="userName"></span>
+
+    <!-- LOGOUT (ADDED) -->
+    <button onclick="logout()" class="btn btn-outline-danger btn-sm">
+        Logout
+    </button>
+
+    <button onclick="toggleMode()" class="btn toggle-btn btn-sm">🌙</button>
+    </div>
+    </div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="container py-4">
+
+    <!-- OVERVIEW STATS -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-4">
+            <div class="custom-card">
+                <h5>3</h5>
+                <small>Total Modules</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="custom-card">
+                <h5>60%</h5>
+                <small>Average Progress</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="custom-card">
+                <h5>2</h5>
+                <small>Assignments Due</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- TODAY FOCUS -->
+    <div class="custom-card mb-4">
+        <h6>📌 Today's Focus</h6>
+        <p class="text mb-0">
+            Focus on Web Development and Backend API tasks today.
+        </p>
+    </div>
+
+    <!-- PROGRESS SUMMARY -->
+    <div class="custom-card mb-4">
+        <h6>📊 Semester Progress</h6>
+        <div class="progress">
+            <div class="progress-bar bg-success" style="width:65%"></div>
+        </div>
+    </div>
+
+    <!-- 🔥 MODULE CARDS  -->
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="custom-card text-center">
+    <h5>Web Development</h5>
+    <p>Progress: 60%</p>
+
+    <div class="progress">
+        <div class="progress-bar bg-success" style="width:60%"></div>
+    </div>
+
+    <!-- BUTTON -->
+    <button class="btn btn-sm btn-outline-light mt-3" onclick="toggleDetails('web')">
+        View Details
+    </button>
+
+    <!-- HIDDEN DETAILS -->
+    <div id="webDetails" class="mt-3" style="display:none;">
+        <p class="mb-1"><b>Topics:</b> HTML, CSS, JavaScript</p>
+        <p class="mb-1"><b>Next Task:</b> Build dashboard UI</p>
+    </div>
+    </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="custom-card text-center" onclick="showModule('mobile')">
+
+                <h5>Mobile App</h5>
+                <p>Progress: 80%</p>
+                <div class="progress">
+                    <div class="progress-bar bg-info" style="width:80%"></div>
+                </div>
+                <button class="btn btn-sm btn-outline-light mt-3" onclick="toggleDetails('mobile')">
+                View Details
+                </button>
+
+                <div id="mobileDetails" style="display:none;" class="mt-3">
+                <p><b>Platform:</b> Android / Flutter</p>
+                <p><b>Next Task:</b> Complete login screen</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="custom-card text-center" onclick="showModule('backend')">
+                <h5>Backend API</h5>
+                <p>Progress: 40%</p>
+                <div class="progress">
+                <div class="progress-bar bg-warning" style="width:40%"></div>
+                </div>
+                <button class="btn btn-sm btn-outline-light mt-3" onclick="toggleDetails('backend')">
+                View Details
+                </button>
+
+                <div id="backendDetails" style="display:none;" class="mt-3">
+                <p><b>Tech:</b> Node.js / Database</p>
+                <p><b>Next Task:</b> Setup API routes</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DEADLINES -->
+    <div class="custom-card mt-4">
+        <h6>⏰ Upcoming Deadlines</h6>
+        <ul class="mb-0">
+            <li>Web Dev Assignment - 24 May</li>
+            <li>Interview Assignment - 3 June</li>
+        </ul>
+    </div>
+
+</div>
+
+<! -- study reminder -- !>
+<div class="custom-card mt-4">
+  <h6>📚 Study Reminder</h6>
+  <p class="text mb-0">
+    Stay consistent with each module to improve your overall performance. Go get em tiger!
+  </p>
+</div>
+
+<script>
+const name = localStorage.getItem("username") || "User";
+document.getElementById("userName").textContent = "Welcome, " + name + "!";
+
+function toggleMode(){
+    document.body.classList.toggle("light");
+
+    localStorage.setItem(
+        "mode",
+        document.body.classList.contains("light") ? "light" : "dark"
+    );
+}
+
+window.onload = function(){
+
+    if(localStorage.getItem("mode") === "light"){
+        document.body.classList.add("light");
+    }
+
+    const links = document.querySelectorAll(".nav-item");
+    const currentPage = window.location.pathname.split("/").pop();
+
+    links.forEach(link => {
+        if(link.getAttribute("href") === currentPage){
+            link.classList.add("active");
+        }
+    });
+}
+</script>
+<footer class="text-center mt-5 py-3" style="border-top:1px solid #2a2a2a;">
+    <p style="margin:0; color:#9ca3af;">
+        © 2026 StudentPlanner | Designed for IMS566 Assignment
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function logout(){
+    localStorage.removeItem("login");
+    localStorage.removeItem("username");
+    window.location = "index.html";
+}
+function toggleDetails(module){
+
+    const el = document.getElementById(module + "Details");
+
+    if(el.style.display === "none"){
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+
+}
+</script>
+<div class="modal fade" id="moduleModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="moduleTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" id="moduleDetails">
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

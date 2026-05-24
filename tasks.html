@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tasks - StudentPlanner</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* FORM CARD HEHE */
+.task-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.task-form input,
+.task-form select {
+    background: #1f1f1f;
+    border: 1px solid #2a2a2a;
+    color: #808080;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.task-form input[type="text"] {
+    flex: 2;
+}
+
+/* BUTTON */
+.task-form .btn-success {
+    background: #22c55e;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    transition: 0.2s;
+}
+
+.task-form .btn-success:hover {
+    background: #16a34a;
+}
+
+/* FILTER CONTAINER */
+.filter {
+    background: #181818;
+    padding: 6px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* FILTER BUTTONS */
+.filter button {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+/* HOVER */
+.filter button:hover {
+    background: #22c55e;
+    color: black;
+}
+
+/* ACTIVE */
+.filter button.active {
+    background: #22c55e;
+    color: black;
+}
+</style>
+
+</head>
+
+<body>
+
+<script>
+if(localStorage.getItem("login") !== "true"){
+    window.location = "index.html";
+}
+</script>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark px-4">
+
+    <!-- BRAND -->
+    <a class="navbar-brand fw-bold" href="#">
+        📘 Student<span style="color:#22c55e;">Planner</span>
+    </a>
+
+    <!-- TOGGLE -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- CONTENT -->
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+        <!-- CENTER NAV (FIXED STYLE) -->
+        <div class="nav-links d-flex gap-3 mx-auto">
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="bi bi-house"></i> Home
+            </a>
+
+            <a href="tasks.html" class="nav-item active">
+                <i class="bi bi-list-task"></i> Tasks
+            </a>
+
+            <a href="modules.html" class="nav-item">
+                <i class="bi bi-folder"></i> Modules
+            </a>
+
+            <a href="profile.html" class="nav-item">
+                <i class="bi bi-person"></i> Profile
+            </a>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="d-flex align-items-center gap-3">
+    <span id="userName"></span>
+
+    <!-- LOGOUT  -->
+    <button onclick="logout()" class="btn btn-outline-danger btn-sm">
+        Logout
+    </button>
+
+    <button onclick="toggleMode()" class="btn btn-outline-light btn-sm">🌙</button>
+    </div>
+
+    </div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="container py-4">
+
+    <h4 class="mb-3">My Tasks</h4>
+
+    <!-- TASK FORM -->
+    <div class="task-form">
+        <input type="text" id="taskName" placeholder="Task name">
+        <input type="date" id="taskDate">
+        <select id="taskPriority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <button onclick="addTask()" class="btn btn-success">Add</button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress mb-4">
+        <div id="progressBar" class="progress-bar bg-success" style="width:0%"></div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter mb-3">
+    <button class="active" onclick="setActive(this); filterTasks('all')">All</button>
+    <button onclick="setActive(this); filterTasks('progress')">In Progress</button>
+    <button onclick="setActive(this); filterTasks('done')">Done</button>
+    <button onclick="setActive(this); filterTasks('overdue')">Overdue</button>
+</div>
+
+    <!-- TASK LIST -->
+    <div id="taskList">
+
+        <div class="task-card high">
+        <input type="checkbox">
+        <div class="task-text">
+        <h6 class="mb-0 text-secondary">Homepage mockup</h6>
+        <small>Due May 25 • High</small>
+        </div>
+        </div>
+
+        <div class="task-card overdue">
+            <input type="checkbox">
+            <div>
+                <h6>Database API</h6>
+                <small class="text-danger">Overdue</small>
+            </div>
+        </div>
+
+        <div class="task-card done">
+            <input type="checkbox" checked>
+            <div>
+                <h6>Write API documentation</h6>
+                <small>Completed</small>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const name = localStorage.getItem("username") || "User";
+document.getElementById("userName").textContent = "Welcome, " + name + "!";
+
+/* DARK MODE OPTION */
+function toggleMode(){
+    document.body.classList.toggle("light");
+    localStorage.setItem("mode", document.body.classList.contains("light") ? "light" : "dark");
+}
+
+/* LOAD */
+window.onload = function(){
+    if(localStorage.getItem("mode") === "light"){
+        document.body.classList.add("light");
+    }
+
+    const links = document.querySelectorAll(".nav-item");
+    const currentPage = window.location.pathname.split("/").pop();
+
+    links.forEach(link => {
+        if(link.getAttribute("href") === currentPage){
+            link.classList.add("active");
+        }
+    });
+
+    updateProgress();
+};
+
+/* PROGRESS */
+function updateProgress(){
+    const tasks = document.querySelectorAll(".task-card input");
+    let done = 0;
+
+    tasks.forEach(t => {
+        if(t.checked) done++;
+    });
+
+    const percent = (done / tasks.length) * 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+}
+
+/* CHECKBOX */
+document.addEventListener("change", function(e){
+    if(e.target.type === "checkbox"){
+        const card = e.target.closest(".task-card");
+
+        if(e.target.checked){
+            card.classList.add("done");
+        } else {
+            card.classList.remove("done");
+        }
+
+        updateProgress();
+    }
+});
+
+/* ADD TASK DALAM LIST */
+function addTask(){
+
+    const name = document.getElementById("taskName").value.trim();
+    const date = document.getElementById("taskDate").value;
+    const priority = document.getElementById("taskPriority").value;
+
+    if(!name){
+        alert("Enter task name");
+        return;
+    }
+
+    let className = "";
+    let label = "";
+
+    if(priority === "high"){
+        className = "high";
+        label = "High";
+    } else if(priority === "medium"){
+        label = "Medium";
+    } else {
+        label = "Low";
+    }
+
+    let dateText = date ? `Due ${date}` : "No date";
+
+    const task = document.createElement("div");
+    task.className = `task-card ${className}`;
+
+    task.innerHTML = `
+        <input type="checkbox">
+        <div>
+            <h6>${name}</h6>
+            <small>${dateText} • ${label}</small>
+        </div>
+    `;
+
+    document.getElementById("taskList").appendChild(task);
+
+    document.getElementById("taskName").value = "";
+    document.getElementById("taskDate").value = "";
+
+    updateProgress();
+}
+
+/* FILTER */
+function filterTasks(type){
+    const tasks = document.querySelectorAll(".task-card");
+
+    tasks.forEach(task => {
+        task.style.display = "flex";
+
+        if(type === "done" && !task.classList.contains("done")){
+            task.style.display = "none";
+        }
+
+        if(type === "overdue" && !task.classList.contains("overdue")){
+            task.style.display = "none";
+        }
+
+        if(type === "progress" && task.classList.contains("done")){
+            task.style.display = "none";
+        }
+    });
+}
+</script>
+<footer class="text-center mt-5 py-3" style="border-top:1px solid #2a2a2a;">
+    <p style="margin:0; color:#9ca3af;">
+        © 2026 StudentPlanner | Designed for IMS566 Assignment
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function logout(){
+    localStorage.removeItem("login");
+    localStorage.removeItem("username");
+    window.location = "index.html";
+}
+</script>
+</body>
+</html>
