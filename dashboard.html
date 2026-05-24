@@ -40,7 +40,7 @@ if(localStorage.getItem("login") !== "true"){
     <!-- CONTENT -->
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-        <!-- CENTER (FIXED STYLE) -->
+        <!-- CENTER -->
         <div class="nav-links d-flex gap-3 mx-auto">
 
             <a href="dashboard.html" class="nav-item">
@@ -178,12 +178,12 @@ if(localStorage.getItem("login") !== "true"){
 <script>
 window.onload = function(){
 
-    // 🌙 Load mode
+    // Load mode
     if(localStorage.getItem("mode") === "light"){
         document.body.classList.add("light");
     }
 
-    // ✅ ACTIVE NAVBAR FIX
+    // ACTIVE NAVBAR 
     const links = document.querySelectorAll(".nav-item");
     const currentPage = window.location.pathname.split("/").pop();
 
@@ -193,12 +193,12 @@ window.onload = function(){
         }
     });
 
-    // 👤 Username
+    // welcome Username
     const name = localStorage.getItem("username") || "User";
     document.getElementById("userName").textContent = "Welcome, " + name + "!";
     document.getElementById("userName2").textContent = name;
 
-    // 📊 Chart
+    // my Chart
     const ctx = document.getElementById('myChart');
     const isLight = document.body.classList.contains("light");
 
