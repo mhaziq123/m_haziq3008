@@ -1,6 +1,4 @@
-// ==========================
-// MOBILE MENU
-// ==========================
+// ==== MOBILE MENU ====//
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
 
@@ -10,9 +8,7 @@ if (hamburger && navLinks) {
   });
 }
 
-// ==========================
-// DARK MODE
-// ==========================
+// ==== DARK MODE ====//
 const themeToggle = document.getElementById("themeToggle");
 
 if (localStorage.getItem("theme") === "dark") {
@@ -34,9 +30,7 @@ if (themeToggle) {
   });
 }
 
-// ==========================
-// FADE-IN ANIMATION
-// ==========================
+// ==== FADE-IN ANIMATION ====//
 const fadeElements = document.querySelectorAll(".fade-in");
 
 if (fadeElements.length > 0) {
@@ -51,9 +45,7 @@ if (fadeElements.length > 0) {
   fadeElements.forEach((el) => observer.observe(el));
 }
 
-// ==========================
-// BACK TO TOP
-// ==========================
+// ==== BACK TO TOP ====//
 const backToTop = document.getElementById("backToTop");
 
 if (backToTop) {
@@ -66,9 +58,7 @@ if (backToTop) {
   });
 }
 
-// ==========================
-// COUNTER
-// ==========================
+// ==== COUNTER ==== //
 const counters = document.querySelectorAll(".counter");
 
 if (counters.length > 0) {
@@ -100,9 +90,7 @@ if (counters.length > 0) {
   counters.forEach(counter => counterObserver.observe(counter));
 }
 
-// ==========================
-// LIGHTBOX
-// ==========================
+// ==== LIGHTBOX ==== //
 const galleryItems = document.querySelectorAll(".gallery-item");
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightboxImg");
@@ -129,9 +117,7 @@ window.addEventListener("click", (e) => {
   }
 });
 
-// ==========================
-// TASK SYSTEM 
-// ==========================
+// ==== TASK SYSTEM ====//
 
 // progress bar
 function updateProgress() {
